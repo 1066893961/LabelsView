@@ -2,7 +2,6 @@ package com.donkingliang.labelsviewdemo;
 
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
-import android.util.Log;
 import android.view.View;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -17,6 +16,7 @@ import static com.donkingliang.labelsviewdemo.R.id.labels;
 public class MainActivity extends AppCompatActivity implements View.OnClickListener {
 
     private LabelsView labelsView;
+    private boolean isSel =false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -54,10 +54,35 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         testList.add(new TestBean("PHP",10));
         testList.add(new TestBean("Python",11));
         testList.add(new TestBean("Swift",12));
+
+        labelsView.setSelectType(LabelsView.SelectType.MULTI);
+        labelsView.setMaxSelect(0);
         labelsView.setLabels(testList, new LabelsView.LabelTextProvider<TestBean>() {
             @Override
             public CharSequence getLabelText(TextView label, int position, TestBean data) {
                 return data.getName();
+            }
+        });
+
+        labelsView.setOnLabelClickListener(new LabelsView.OnLabelClickListener() {
+            @Override
+            public void onLabelClick(TextView label, Object data, int position) {
+                List<Integer> list = labelsView.getSelectLabels();
+                if (list.contains(0) && !isSel){
+                    list.clear();
+                    list.add(0);
+                    labelsView.setSelects(list);
+                    isSel = true;
+                }else {
+                    List<Integer> list2 = labelsView.getSelectLabels();
+                    if (list2.contains(0)){
+                        list2.remove(0);
+                    }
+                    labelsView.setSelects(list2);
+                    isSel = false;
+                }
+
+//                String s = ((TestBean)labelsView.getSelectLabelDatas().get(0)).getName();
             }
         });
 
